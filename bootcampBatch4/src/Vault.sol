@@ -23,7 +23,29 @@ contract Vault is ERC20 {
             shares = (amount * totalShares) / totalAssets;
         }
 
+        // mint shares to msg.sender
         _mint(msg.sender, shares);
+
+        // transfer usdc from msg.sender to vault
+        // USDC dari msg.sender diambil dikirim ke dalam vault
+        IERC20(usdc).transferFrom(msg.sender, address(this), amount);
+    }
+
+    function withdraw(uint256 shares) public {
+        // ammount = shares * total assets / total shares
+        uint256 totalAssets = IERC20(usdc).balanceOf(address(this));
+        uint256 totalShares = totalSupply();
+
+        uint256 amount = (shares * totalAssets) / totalShares;
+
+        _burn(msg.sender, shares);
+
+        //transfer usdc from vault to msg.sender
+        IERC20(usdc).transfer(msg.sender, amount);
+    }
+
+    function distributeYield(uint256 amount) public {
+        // transfer usdc from msg.sender to vault
         IERC20(usdc).transferFrom(msg.sender, address(this), amount);
     }
 }
