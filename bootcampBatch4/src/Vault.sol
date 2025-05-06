@@ -38,7 +38,7 @@ contract Vault is ERC20 {
 
         uint256 amount = (shares * totalAssets) / totalShares;
 
-        _burn(msg.sender, shares);
+        _burn(msg.sender, shares); //fungsi burn untuk menghapus token dari msg.sender
 
         //transfer usdc from vault to msg.sender
         IERC20(usdc).transfer(msg.sender, amount);
