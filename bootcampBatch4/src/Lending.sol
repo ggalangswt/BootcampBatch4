@@ -34,7 +34,7 @@ contract Lending {
         IERC20(weth).approve(aave, supplyAmount);
         IAave(aave).supply(weth, supplyAmount, address(this), 0);
         // borrow ke Aave
-        IAave(aave).borrow(usdc, borrowAmount, 0, 0, address(this));
+        IAave(aave).borrow(usdc, borrowAmount, 2, 0, address(this));
         // transfer usdc ke msg.sender
         IERC20(usdc).transfer(msg.sender, borrowAmount);
     }
