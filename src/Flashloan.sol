@@ -5,19 +5,9 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 
 interface IAave {
-    function supply(
-        address asset, 
-        uint256 amount, 
-        address onBehalfOf, 
-        uint16 referralCode
-    ) external;
-    function borrow(
-        address asset,
-        uint256 amount, 
-        uint256 interestRateMode, 
-        uint16 referralCode, 
-        address onBehalfOf
-    ) external;
+    function supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode) external;
+    function borrow(address asset, uint256 amount, uint256 interestRateMode, uint16 referralCode, address onBehalfOf)
+        external;
 }
 
 // BALANCER
@@ -34,13 +24,10 @@ contract Flashloan {
     address weth = 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1;
     address usdc = 0xaf88d065e77c8cC2239327C5EDb3A432268e5831;
 
-    function loopingSupply(
-        uint256 supplyAmount,
-        uint256 borrowAmount
-    ) external {
+    function loopingSupply(uint256 supplyAmount, uint256 borrowAmount) external {
         // deposit
         IERC20(weth).transferFrom(msg.sender, address(this), supplyAmount);
-        
+
         address[] memory tokens = new address[](1);
         tokens[0] = usdc;
 
@@ -48,12 +35,7 @@ contract Flashloan {
         amounts[0] = borrowAmount;
 
         // flashloan
-        IFlashloan(balancerVault).flashLoan(
-            address(this),
-            tokens,
-            amounts,
-            abi.encode(supplyAmount, borrowAmount)
-        );
+        IFlashloan(balancerVault).flashLoan(address(this), tokens, amounts, abi.encode(supplyAmount, borrowAmount));
     }
 
     function receiveFlashLoan(
@@ -65,11 +47,10 @@ contract Flashloan {
         (uint256 supplyAmount, uint256 borrowAmount) = abi.decode(data, (uint256, uint256));
 
         // // approve Uniswap router to spend WETH
-        IERC20(usdc).approve(uniswapRouter,borrowAmount);
+        IERC20(usdc).approve(uniswapRouter, borrowAmount);
 
         // // swap WETH to USDC
-        ISwapRouter.ExactInputSingleParams memory params =
-        ISwapRouter.ExactInputSingleParams({
+        ISwapRouter.ExactInputSingleParams memory params = ISwapRouter.ExactInputSingleParams({
             tokenIn: usdc,
             tokenOut: weth,
             fee: 3000,

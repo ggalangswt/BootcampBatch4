@@ -24,5 +24,4 @@ contract SwapTest is Test {
         assertGt(IERC20(usdc).balanceOf(address(this)), 0);
         console.log("USDC balance: ", IERC20(usdc).balanceOf(address(this)));
     }
-
 }

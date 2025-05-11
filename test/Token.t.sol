@@ -5,17 +5,16 @@ import {Test, console} from "forge-std/Test.sol";
 import {Token} from "../src/Token.sol";
 
 contract TokenTest is Test {
-   Token public token;
+    Token public token;
 
-   address public alice = makeAddr("Alice"); //Membuat akun alice
-   address public bob = makeAddr("Bob"); //Membuat akun bob
+    address public alice = makeAddr("Alice"); //Membuat akun alice
+    address public bob = makeAddr("Bob"); //Membuat akun bob
 
-
-   function setUp() public {
+    function setUp() public {
         token = new Token();
-   }
+    }
 
-   function test_Mint() public {
+    function test_Mint() public {
         token.mint(alice, 2000);
         assertEq(token.balanceOf(alice), 2000);
         console.log("balance of alice", token.balanceOf(alice));
@@ -27,5 +26,5 @@ contract TokenTest is Test {
         token.mint(address(this), 1000);
         assertEq(token.balanceOf(address(this)), 1000);
         console.log("balance of this", token.balanceOf(address(this)));
-   }
+    }
 }

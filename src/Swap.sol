@@ -16,8 +16,7 @@ contract Swap {
         IERC20(weth).approve(uniswapRouter, amountIn);
 
         // swap WETH to USDC
-        ISwapRouter.ExactInputSingleParams memory params =
-        ISwapRouter.ExactInputSingleParams({
+        ISwapRouter.ExactInputSingleParams memory params = ISwapRouter.ExactInputSingleParams({
             tokenIn: weth,
             tokenOut: usdc,
             fee: 3000,

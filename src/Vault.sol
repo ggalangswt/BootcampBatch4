@@ -4,10 +4,11 @@ pragma solidity ^0.8.13;
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract Vault is ERC20 {       
-    
+contract Vault is ERC20 {
     address public usdc;
-    constructor(address _usdc) ERC20("Vault", "VAULT") {         //inisiasi nama token
+
+    constructor(address _usdc) ERC20("Vault", "VAULT") {
+        //inisiasi nama token
         usdc = _usdc;
     }
 

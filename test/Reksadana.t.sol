@@ -20,7 +20,7 @@ contract ReksadanaTest is Test {
     function test_totalAsset() public {
         deal(wbtc, address(reksadana), 1e8); // 1 WBTC ke dalam Reksadana
         deal(weth, address(reksadana), 10e18); // 10 WETH ke dalam Reksadana
-        
+
         console.log("Total Asset: ", reksadana.totalAsset());
     }
 
@@ -60,5 +60,4 @@ contract ReksadanaTest is Test {
         vm.expectRevert(Reksadana.InsufficientShares.selector);
         reksadana.withdraw(10000e6); // withdraw lebih dari yang dimiliki
     }
-
 }

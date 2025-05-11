@@ -25,12 +25,11 @@ contract Price {
 
     function getPrice() public view returns (uint256) {
         // BTC/USD
-        (,int256 quotePrice,,,) = IAggregatorV3(quoteFeed).latestRoundData();
+        (, int256 quotePrice,,,) = IAggregatorV3(quoteFeed).latestRoundData();
         // USDC/USD
-        (,int256 basePrice,,,) = IAggregatorV3(baseFeed).latestRoundData();
+        (, int256 basePrice,,,) = IAggregatorV3(baseFeed).latestRoundData();
 
         // formula harga BTC dalam USDC = quotePrice * 1e6 / basePrice
         return uint256(quotePrice) * 1e6 / uint256(basePrice);
     }
 }
-

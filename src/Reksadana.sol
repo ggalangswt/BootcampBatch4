@@ -12,29 +12,15 @@ interface IAggregatorV3 {
 
     function version() external view returns (uint256);
 
-    function getRoundData(
-        uint80 _roundId
-    )
+    function getRoundData(uint80 _roundId)
         external
         view
-        returns (
-            uint80 roundId,
-            int256 answer,
-            uint256 startedAt,
-            uint256 updatedAt,
-            uint80 answeredInRound
-        );
+        returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound);
 
     function latestRoundData()
         external
         view
-        returns (
-            uint80 roundId,
-            int256 answer,
-            uint256 startedAt,
-            uint256 updatedAt,
-            uint80 answeredInRound
-        );
+        returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound);
 }
 
 contract Reksadana is ERC20 {
@@ -61,22 +47,18 @@ contract Reksadana is ERC20 {
 
     function totalAsset() public returns (uint256) {
         // ambil harga usdc dalam usd
-        (, int256 usdcPrice, , , ) = IAggregatorV3(baseFeed).latestRoundData();
+        (, int256 usdcPrice,,,) = IAggregatorV3(baseFeed).latestRoundData();
 
         // hitung harga wbtc dalam usdc
-        (, int256 wbtcPrice, , , ) = IAggregatorV3(wbtcFeed).latestRoundData();
-        uint256 wbtcPriceInUsdc = (uint256(wbtcPrice) * 1e6) /
-            uint256(usdcPrice);
+        (, int256 wbtcPrice,,,) = IAggregatorV3(wbtcFeed).latestRoundData();
+        uint256 wbtcPriceInUsdc = (uint256(wbtcPrice) * 1e6) / uint256(usdcPrice);
 
         // hitung harga weth dalam usdc
-        (, int256 wethPrice, , , ) = IAggregatorV3(wethFeed).latestRoundData();
-        uint256 wethPriceInUsdc = (uint256(wethPrice) * 1e6) /
-            uint256(usdcPrice);
+        (, int256 wethPrice,,,) = IAggregatorV3(wethFeed).latestRoundData();
+        uint256 wethPriceInUsdc = (uint256(wethPrice) * 1e6) / uint256(usdcPrice);
 
-        uint256 totalWethAsset = (IERC20(weth).balanceOf(address(this)) *
-            wethPriceInUsdc) / 1e18;
-        uint256 totalWbtcAsset = (IERC20(wbtc).balanceOf(address(this)) *
-            wbtcPriceInUsdc) / 1e8;
+        uint256 totalWethAsset = (IERC20(weth).balanceOf(address(this)) * wethPriceInUsdc) / 1e18;
+        uint256 totalWbtcAsset = (IERC20(wbtc).balanceOf(address(this)) * wbtcPriceInUsdc) / 1e8;
 
         return totalWbtcAsset + totalWethAsset;
     }
@@ -105,17 +87,16 @@ contract Reksadana is ERC20 {
 
         //swap usdc ke weth
         IERC20(usdc).approve(uniswapRouter, amountIn);
-        ISwapRouter.ExactInputSingleParams memory params = ISwapRouter
-            .ExactInputSingleParams({
-                tokenIn: usdc,
-                tokenOut: weth,
-                fee: 3000,
-                recipient: address(this),
-                deadline: block.timestamp,
-                amountIn: amountIn,
-                amountOutMinimum: 0,
-                sqrtPriceLimitX96: 0
-            });
+        ISwapRouter.ExactInputSingleParams memory params = ISwapRouter.ExactInputSingleParams({
+            tokenIn: usdc,
+            tokenOut: weth,
+            fee: 3000,
+            recipient: address(this),
+            deadline: block.timestamp,
+            amountIn: amountIn,
+            amountOutMinimum: 0,
+            sqrtPriceLimitX96: 0
+        });
         ISwapRouter(uniswapRouter).exactInputSingle(params);
 
         //swap usdc ke wbtc
@@ -145,10 +126,8 @@ contract Reksadana is ERC20 {
         //hitung proporsi
         uint256 proportion = (shares * PROPORTIONT_SCALED) / totalShares;
 
-        uint256 amountWbtc = (IERC20(wbtc).balanceOf(address(this)) *
-            proportion) / PROPORTIONT_SCALED;
-        uint256 amountWeth = (IERC20(weth).balanceOf(address(this)) *
-            proportion) / PROPORTIONT_SCALED;
+        uint256 amountWbtc = (IERC20(wbtc).balanceOf(address(this)) * proportion) / PROPORTIONT_SCALED;
+        uint256 amountWeth = (IERC20(weth).balanceOf(address(this)) * proportion) / PROPORTIONT_SCALED;
 
         _burn(msg.sender, shares);
 
