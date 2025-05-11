@@ -24,5 +24,28 @@ contract ReksadanaTest is Test {
         console.log("Total Asset: ", reksadana.totalAsset());
     }
 
+    function test_deposit() public {
+        deal(usdc, address(this), 100e6); // 100 USDC ke dalam Reksadana
+        IERC20(usdc).approve(address(reksadana), 100e6);
+        reksadana.deposit(100e6);
+
+        console.log("total asset: ", reksadana.totalAsset());
+        console.log("user shares", IERC20(address(reksadana)).balanceOf(address(this)));
+    }
+
+    function test_withdraw() public {
+        deal(usdc, address(this), 1000e6); // 100 USDC ke dalam Reksadana
+        IERC20(usdc).approve(address(reksadana), 1000e6);
+        reksadana.deposit(1000e6);
+
+        // withdraw semua shares yang dimiliki user
+        uint256 shares = IERC20(address(reksadana)).balanceOf(address(this));
+        reksadana.withdraw(shares);
+
+        console.log("user usdc", IERC20(usdc).balanceOf(address(this)));
+        console.log("user shares", IERC20(address(reksadana)).balanceOf(address(this)));
+        assertEq(IERC20(address(reksadana)).balanceOf(address(this)), 0);
+    }
+
 
 }
