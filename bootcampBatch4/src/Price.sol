@@ -20,14 +20,14 @@ interface IAggregatorV3 {
 }
 
 contract Price {
-    address quotePrice = 0x6ce185860a4963106506C203335A2910413708e9; // BTC/USD
-    address basePrice = 0x50834F3163758fcC1Df9973b6e91f0F0F0434aD3; // USDC/USD
+    address quoteFeed = 0x6ce185860a4963106506C203335A2910413708e9; // BTC/USD
+    address baseFeed = 0x50834F3163758fcC1Df9973b6e91f0F0F0434aD3; // USDC/USD
 
     function getPrice() public view returns (uint256) {
         // BTC/USD
-        (,int256 quotePrice,,,) = IAggregatorV3(quotePrice).latestRoundData();
+        (,int256 quotePrice,,,) = IAggregatorV3(quoteFeed).latestRoundData();
         // USDC/USD
-        (,int256 basePrice,,,) = IAggregatorV3(basePrice).latestRoundData();
+        (,int256 basePrice,,,) = IAggregatorV3(baseFeed).latestRoundData();
 
         // formula harga BTC dalam USDC = quotePrice * 1e6 / basePrice
         return uint256(quotePrice) * 1e6 / uint256(basePrice);
