@@ -72,5 +72,36 @@ contract Reksadana is ERC20{
 
         // mint shares to msg.sender
         _mint(msg.sender, shares);
+
+        // swap
+        uint256 amountIn = amount / 2;
+
+        //swap usdc ke weth
+        IERC20(usdc).approve(uniswapRouter, amountIn);
+        ISwapRouter.ExactInputSingleParams memory params = ISwapRouter.ExactInputSingleParams({
+            tokenIn: usdc,
+            tokenOut: weth,
+            fee: 3000,
+            recipient: address(this),
+            deadline: block.timestamp,
+            amountIn: amountIn,
+            amountOutMinimum: 0,
+            sqrtPriceLimitX96: 0
+        });
+        ISwapRouter(uniswapRouter).exactInputSingle(params);
+
+        //swap usdc ke wbtc
+        IERC20(usdc).approve(uniswapRouter, amountIn);
+        params = ISwapRouter.ExactInputSingleParams({
+            tokenIn: usdc,
+            tokenOut: wbtc,
+            fee: 3000,
+            recipient: address(this),
+            deadline: block.timestamp,
+            amountIn: amountIn,
+            amountOutMinimum: 0,
+            sqrtPriceLimitX96: 0
+        });
+        ISwapRouter(uniswapRouter).exactInputSingle(params);
     }
 }
